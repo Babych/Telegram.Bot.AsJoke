@@ -12,6 +12,22 @@ public class UpdateHandler : IUpdateHandler
     private readonly ITelegramBotClient _botClient;
     private readonly ILogger<UpdateHandler> _logger;
 
+    static Dictionary<string, string> files = new()
+    {
+        { "1", "photo_5188245662809050727_x.jpg" },
+        { "2", "photo_5190497462622737539_y.jpg" },
+        { "3", "photo_5231469462056720799_y.jpg" },
+        { "4", "photo_5233283389954577626_y.jpg" },
+        { "5", "photo_5235535189768262857_x.jpg" },
+        { "6", "photo_5235535189768262857_x.jpg" },
+        { "7", "photo_5235643762246537613_x.jpg" },
+        { "8", "photo_5267085624387687137_x.jpg" },
+        { "9", "photo_5291932967972753702_y.jpg" },
+        { "10", "photo_5467383988332121077_y.jpg" },
+        { "11", "photo_5469634856137903679_x.jpg" },
+        { "12", "photo_5474138455765274187_y.jpg" },
+    };
+
     public UpdateHandler(ITelegramBotClient botClient, ILogger<UpdateHandler> logger)
     {
         _botClient = botClient;
@@ -45,12 +61,14 @@ public class UpdateHandler : IUpdateHandler
         if (message.Text is not { } messageText)
             return;
 
+        Random random = new Random();
+        
         var action = messageText.Split(' ')[0] switch
         {
             "/inline_keyboard" => SendInlineKeyboard(_botClient, message, cancellationToken),
             "/keyboard"        => SendReplyKeyboard(_botClient, message, cancellationToken),
             "/remove"          => RemoveKeyboard(_botClient, message, cancellationToken),
-            "/photo"           => SendFile(_botClient, message, cancellationToken),
+            "/randomMeme"      => SendFile(_botClient, message, random.Next(1, 12).ToString(), cancellationToken),
             "/request"         => RequestContactAndLocation(_botClient, message, cancellationToken),
             "/inline_mode"     => StartInlineQuery(_botClient, message, cancellationToken),
             "/throw"           => FailingHandler(_botClient, message, cancellationToken),
@@ -58,42 +76,6 @@ public class UpdateHandler : IUpdateHandler
         };
         Message sentMessage = await action;
         _logger.LogInformation("The message was sent with id: {SentMessageId}", sentMessage.MessageId);
-
-        // Send inline keyboard
-        // You can process responses in BotOnCallbackQueryReceived handler
-        static async Task<Message> SendInlineKeyboard(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-        {
-            await botClient.SendChatActionAsync(
-                chatId: message.Chat.Id,
-                chatAction: ChatAction.Typing,
-                cancellationToken: cancellationToken);
-
-            // Simulate longer running task
-            await Task.Delay(500, cancellationToken);
-
-            InlineKeyboardMarkup inlineKeyboard = new(
-                new[]
-                {
-                    // first row
-                    new []
-                    {
-                        InlineKeyboardButton.WithCallbackData("1.1", "11"),
-                        InlineKeyboardButton.WithCallbackData("1.2", "12"),
-                    },
-                    // second row
-                    new []
-                    {
-                        InlineKeyboardButton.WithCallbackData("2.1", "21"),
-                        InlineKeyboardButton.WithCallbackData("2.2", "22"),
-                    },
-                });
-
-            return await botClient.SendTextMessageAsync(
-                chatId: message.Chat.Id,
-                text: "Choose",
-                replyMarkup: inlineKeyboard,
-                cancellationToken: cancellationToken);
-        }
 
         static async Task<Message> SendReplyKeyboard(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
         {
@@ -123,24 +105,6 @@ public class UpdateHandler : IUpdateHandler
                 cancellationToken: cancellationToken);
         }
 
-        static async Task<Message> SendFile(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
-        {
-            await botClient.SendChatActionAsync(
-                message.Chat.Id,
-                ChatAction.UploadPhoto,
-                cancellationToken: cancellationToken);
-
-            const string filePath = "Files/tux.png";
-            await using FileStream fileStream = new(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
-            var fileName = filePath.Split(Path.DirectorySeparatorChar).Last();
-
-            return await botClient.SendPhotoAsync(
-                chatId: message.Chat.Id,
-                photo: new InputFileStream(fileStream, fileName),
-                caption: "Nice Picture",
-                cancellationToken: cancellationToken);
-        }
-
         static async Task<Message> RequestContactAndLocation(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
         {
             ReplyKeyboardMarkup RequestReplyKeyboard = new(
@@ -159,13 +123,9 @@ public class UpdateHandler : IUpdateHandler
 
         static async Task<Message> Usage(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
         {
-            const string usage = "Usage:\n" +
-                                 "/inline_keyboard - send inline keyboard\n" +
-                                 "/keyboard    - send custom keyboard\n" +
-                                 "/remove      - remove custom keyboard\n" +
-                                 "/photo       - send a photo\n" +
-                                 "/request     - request location or contact\n" +
-                                 "/inline_mode - send keyboard with Inline Query";
+            const string usage = "Використання:\n" +
+                                 "/randomMeme       - Отримати випадковий мемас\n" +
+                                 "/inline_keyboard      - Показати клавіатуру";
 
             return await botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
@@ -196,20 +156,83 @@ public class UpdateHandler : IUpdateHandler
 #pragma warning restore RCS1163 // Unused parameter.
     }
 
+    // Send inline keyboard
+    // You can process responses in BotOnCallbackQueryReceived handler
+    static async Task<Message> SendInlineKeyboard(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
+    {
+        await botClient.SendChatActionAsync(
+            chatId: message.Chat.Id,
+            chatAction: ChatAction.Typing,
+            cancellationToken: cancellationToken);
+
+        // Simulate longer running task
+        await Task.Delay(100, cancellationToken);
+
+        InlineKeyboardMarkup inlineKeyboard = new(
+            new[]
+            {
+                    // first row
+                    new []
+                    {
+                        InlineKeyboardButton.WithCallbackData("1", "1"),
+                        InlineKeyboardButton.WithCallbackData("2", "2"),
+                        InlineKeyboardButton.WithCallbackData("3", "3"),
+                        InlineKeyboardButton.WithCallbackData("4", "4"),
+                        InlineKeyboardButton.WithCallbackData("5", "5"),
+                        InlineKeyboardButton.WithCallbackData("6", "6"),
+                    },
+                    new []
+                    {
+                        InlineKeyboardButton.WithCallbackData("7", "7"),
+                        InlineKeyboardButton.WithCallbackData("8", "8"),
+                        InlineKeyboardButton.WithCallbackData("9", "9"),
+                        InlineKeyboardButton.WithCallbackData("10", "10"),
+                        InlineKeyboardButton.WithCallbackData("11", "11"),
+                        InlineKeyboardButton.WithCallbackData("12", "12"),
+                    }
+            });
+
+        return await botClient.SendTextMessageAsync(
+            chatId: message.Chat.Id,
+            text: "Номер мема",
+            replyMarkup: inlineKeyboard,
+            cancellationToken: cancellationToken);
+    }
+
+
+    static async Task<Message> SendFile(ITelegramBotClient botClient, Message message, string memeId, CancellationToken cancellationToken)
+    {
+        await botClient.SendChatActionAsync(
+            message.Chat.Id,
+            ChatAction.UploadPhoto,
+            cancellationToken: cancellationToken);
+        string filePath = files[memeId];
+        await using FileStream fileStream = new($"Files/{filePath}", FileMode.Open, FileAccess.Read, FileShare.Read);
+        var fileName = filePath.Split(Path.DirectorySeparatorChar).Last();
+
+        return await botClient.SendPhotoAsync(
+            chatId: message.Chat.Id,
+            photo: new InputFileStream(fileStream, fileName),
+            caption: "Nice Picture",
+            cancellationToken: cancellationToken);
+    }
+
     // Process Inline Keyboard callback data
     private async Task BotOnCallbackQueryReceived(CallbackQuery callbackQuery, CancellationToken cancellationToken)
     {
         _logger.LogInformation("Received inline keyboard callback from: {CallbackQueryId}", callbackQuery.Id);
 
-        await _botClient.AnswerCallbackQueryAsync(
-            callbackQueryId: callbackQuery.Id,
-            text: $"Received {callbackQuery.Data}",
-            cancellationToken: cancellationToken);
+        await SendFile(_botClient, callbackQuery.Message, callbackQuery.Data, cancellationToken);
+        await SendInlineKeyboard(_botClient, callbackQuery.Message, cancellationToken);
+        //await _botClient.AnswerCallbackQueryAsync(
+        //    callbackQueryId: callbackQuery.Id,
+        //    text: $"Received {callbackQuery.Data}",
+        //    cancellationToken: cancellationToken);
 
-        await _botClient.SendTextMessageAsync(
-            chatId: callbackQuery.Message!.Chat.Id,
-            text: $"Received {callbackQuery.Data}",
-            cancellationToken: cancellationToken);
+        //await _botClient.SendTextMessageAsync(
+        //    chatId: callbackQuery.Message!.Chat.Id,
+        //    text: $"Received {callbackQuery.Data}",
+        //    cancellationToken: cancellationToken);
     }
 
     #region Inline Mode
@@ -245,12 +268,8 @@ public class UpdateHandler : IUpdateHandler
     }
 
     #endregion
-
-#pragma warning disable IDE0060 // Remove unused parameter
-#pragma warning disable RCS1163 // Unused parameter.
+    
     private Task UnknownUpdateHandlerAsync(Update update, CancellationToken cancellationToken)
-#pragma warning restore RCS1163 // Unused parameter.
-#pragma warning restore IDE0060 // Remove unused parameter
     {
         _logger.LogInformation("Unknown update type: {UpdateType}", update.Type);
         return Task.CompletedTask;
