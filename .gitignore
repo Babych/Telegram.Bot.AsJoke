@@ -225,3 +225,4 @@ local.settings.json
 
 .fake
 .ionide
+Telegram.Bot.AsJoke.Polling/appsettings.json
