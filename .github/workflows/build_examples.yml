@@ -1,4 +1,4 @@
-name: Build Examples
+name: Build and Run .NET Core App
 
 on:
   workflow_dispatch:
@@ -18,7 +18,12 @@ jobs:
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: 6.0.x
+
     - name: Restore dependencies
       run: dotnet restore
+
     - name: Build
       run: dotnet build --configuration Release --no-restore 
+      
+    - name: Run .NET Core App
+      run: dotnet run -configuration Release --project Telegram.Bot.AsJoke/Telegram.Bot.AsJoke.Polling/Telegram.BotAsJoke.Polling.csproj
