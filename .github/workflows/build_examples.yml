@@ -19,10 +19,17 @@ jobs:
       with:
         dotnet-version: 6.0.x
 
+    - name: read a secret
+      run: "echo secret alue is: ${{ secrets.API_KEY }}"
+
     - name: Replace API Key in Config File
-      run: sed -i 's|"API_KEY"|'"${{ secrets.PASS_API_KEY }}"'|g' Telegram.Bot.AsJoke.Polling/appsettings.json
+      run: sed -i 's|"API_KEY"|'"${{ secrets.API_KEY }}"'|g' Telegram.Bot.AsJoke.Polling/appsettings.json
       env:
-          PASS_API_KEY: ${{ secrets.API_KEY }}
+          ENV_API_KEY: ${{ secrets.API_KEY }}
+
+          
+    - name: read an env val
+      run: "echo env value is: ${{ ENV_API_KEY }}"
 
     - name: Restore dependencies
       run: dotnet restore
