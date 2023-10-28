@@ -20,11 +20,9 @@ jobs:
         dotnet-version: 6.0.x
 
     - name: Replace API Key in Config File
-        run: |
-          # Replace {API_KEY} in appsettings.json with the secret value
-          sed -i 's|"{API_KEY}"|'"${{ secrets.YOUR_SECRET_NAME }}"'|g' Telegram.Bot.AsJoke.Polling/appsettings.json
-        env:
-          YOUR_SECRET_NAME: ${{ secrets.YOUR_SECRET_NAME }}
+      run: sed -i 's|"{API_KEY}"|'"${{ secrets.API_KEY }}"'|g' Telegram.Bot.AsJoke.Polling/appsettings.json
+      env:
+          YOUR_SECRET_NAME: ${{ secrets.API_KEY }}
 
     - name: Restore dependencies
       run: dotnet restore
