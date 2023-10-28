@@ -68,7 +68,7 @@ jobs:
 
   deploy:
     permissions:
-      contents: write
+      contents: none
     runs-on: ubuntu-latest
     needs: build
     environment:

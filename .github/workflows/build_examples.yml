@@ -32,5 +32,5 @@ jobs:
     - name: Build
       run: dotnet build --configuration Release --no-restore 
       
-    - name: Run .NET Core App
-      run: dotnet run -configuration Release --project Telegram.Bot.AsJoke.Polling/Telegram.BotAsJoke.Polling.csproj
+    #- name: Run .NET Core App
+    #  run: dotnet run -configuration Release --project Telegram.Bot.AsJoke.Polling/Telegram.BotAsJoke.Polling.csproj
