@@ -29,7 +29,7 @@ jobs:
 
           
     - name: read an env val
-      run: "echo env value is: ${{ ENV_API_KEY }}"
+      run: "echo env value is: ${{ env.ENV_API_KEY }}"
 
     - name: Restore dependencies
       run: dotnet restore
