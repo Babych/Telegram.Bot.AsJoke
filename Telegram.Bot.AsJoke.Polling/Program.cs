@@ -2,6 +2,8 @@ using Telegram.Bot;
 using Telegram.Bot.Services;
 
 
+Console.WriteLine(File.ReadAllText("appsettings.json"));
+
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
     {
