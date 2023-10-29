@@ -67,6 +67,7 @@ jobs:
           file: ./Dockerfile
         env:
           API_KEY: ${{ secrets.API_KEY }}  # pass API_KEY as an environment variable
+          API_KEY2: 'teeest'
 
   deploy:
     permissions:

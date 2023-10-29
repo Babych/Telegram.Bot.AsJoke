@@ -1,11 +1,19 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
 WORKDIR /App
 
-# Accept API_KEY as a build argument
+# Accept build arguments for API keys
 ARG API_KEY
+ARG API_KEY2
 
-# Set the API_KEY environment variable
+# Set the API_KEY and API_KEY2 environment variables
 ENV API_KEY=$API_KEY
+ENV API_KEY2=$API_KEY2
+
+
+# Print the API_KEY environment variable in the build logs
+RUN echo "API_KEY is $API_KEY"
+RUN echo "API_KEY2 is $API_KEY2"
+
 
 # Copy everything
 COPY . ./
@@ -20,9 +28,6 @@ RUN ls
 
 # Replace API Key in Config File
 RUN sed -i "s|\"API_KEY\"|\"$API_KEY\"|g" Telegram.Bot.AsJoke.Polling/appsettings.json
-
-# Print the API_KEY environment variable in the build logs
-RUN echo "API_KEY is $API_KEY"
 
 # List the content of appsettings.json
 RUN cat Telegram.Bot.AsJoke.Polling/appsettings.json
