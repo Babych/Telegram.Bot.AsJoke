@@ -65,8 +65,6 @@ jobs:
           push: true
           tags: ghcr.io/${{ env.REPO }}:${{ github.sha }}
           file: ./Dockerfile
-          build-args: |
-            API_KEY=${{ secrets.API_KEY }}
 
   deploy:
     permissions:
