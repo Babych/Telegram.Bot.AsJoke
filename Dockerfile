@@ -18,6 +18,9 @@ RUN ls
 # Replace API Key in Config File
 RUN sed -i 's|API_KEY|'$API_KEY'|g' Telegram.Bot.AsJoke.Polling/appsettings.json
 
+# List the content of appsettings.json
+RUN cat appsettings.json
+
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/runtime:7.0
 WORKDIR /App
