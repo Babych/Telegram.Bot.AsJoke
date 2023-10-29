@@ -1,5 +1,6 @@
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
+using Telegram.BotAsJoke.Polling;
 
 namespace Telegram.Bot.Abstract;
 
@@ -40,6 +41,7 @@ public abstract class ReceiverServiceBase<TUpdateHandler> : IReceiverService
 
         var me = await _botClient.GetMeAsync(stoppingToken);
         _logger.LogInformation("Start receiving updates for {BotName}", me.Username ?? "My Awesome Bot");
+        Log.Instance.Trace($"Start receiving updates for {me.Username}");
 
         // Start receiving updates
         await _botClient.ReceiveAsync(

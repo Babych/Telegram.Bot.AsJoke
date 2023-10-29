@@ -3,6 +3,7 @@ using Telegram.Bot.Services;
 using Telegram.BotAsJoke.Polling;
 
 Log.Instance.Trace("App started");
+Log.Instance.Trace($"API_KEY {Environment.GetEnvironmentVariable("API_KEY")}");
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
