@@ -4,8 +4,11 @@ WORKDIR /App
 # Accept API_KEY as a build argument
 ARG API_KEY
 
+# Run ls -la to list files and directories in the current directory
+RUN ls -la
+
 # Replace API Key in Config File
-RUN sed -i 's|"API_KEY"|'"$API_KEY"'|g' appsettings.json
+RUN sed -i 's|"API_KEY"|'"$API_KEY"'|g' Telegram.Bot.AsJoke.Polling/appsettings.json
 
 # Copy everything
 COPY . ./
