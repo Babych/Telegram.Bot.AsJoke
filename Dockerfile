@@ -4,6 +4,9 @@ WORKDIR /App
 # Accept API_KEY as a build argument
 ARG API_KEY
 
+# Set the API_KEY environment variable
+ENV API_KEY=$API_KEY
+
 # Copy everything
 COPY . ./
 
