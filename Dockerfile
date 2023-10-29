@@ -19,7 +19,7 @@ RUN ls
 RUN sed -i 's|API_KEY|'$API_KEY'|g' Telegram.Bot.AsJoke.Polling/appsettings.json
 
 # List the content of appsettings.json
-RUN cat appsettings.json
+RUN cat Telegram.Bot.AsJoke.Polling/appsettings.json
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/runtime:7.0
