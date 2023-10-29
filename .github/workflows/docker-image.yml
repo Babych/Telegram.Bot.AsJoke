@@ -2,9 +2,9 @@ name: Docker Image CI
 
 on:
   push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+    branches:
+      - dev  # Build on every push to the dev branch
+      - main  # Deploy only when changes are pushed to the main branch
     
 jobs:
   build:
@@ -28,6 +28,7 @@ jobs:
   deployment:
     needs: build
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'  # Deploy only if the branch is main
     steps:
     - name: SSH into Target Environment and deploy
       uses: appleboy/ssh-action@master
