@@ -1,8 +1,8 @@
 using Telegram.Bot;
 using Telegram.Bot.Services;
+using Telegram.BotAsJoke.Polling;
 
-
-Console.WriteLine(File.ReadAllText("appsettings.json"));
+Log.Instance.Trace("App started");
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
@@ -19,8 +19,7 @@ IHost host = Host.CreateDefaultBuilder(args)
         services.AddHttpClient("telegram_bot_client")
                 .AddTypedClient<ITelegramBotClient>((httpClient, sp) =>
                 {
-                    BotConfiguration? botConfig = sp.GetConfiguration<BotConfiguration>();
-                    TelegramBotClientOptions options = new(botConfig.BotToken);
+                    TelegramBotClientOptions options = new(BotConfiguration.BotToken);
                     return new TelegramBotClient(options, httpClient);
                 });
 
@@ -40,5 +39,5 @@ public class BotConfiguration
 {
     public static readonly string Configuration = "BotConfiguration";
 
-    public string BotToken { get; set; } = "";
+    public static string BotToken { get; set; } = Environment.GetEnvironmentVariable("API_KEY");
 }
