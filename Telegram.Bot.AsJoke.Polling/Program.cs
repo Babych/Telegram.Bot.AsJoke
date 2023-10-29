@@ -1,8 +1,10 @@
 using Telegram.Bot;
 using Telegram.Bot.Services;
+using Telegram.BotAsJoke.Polling;
 
-
-Console.WriteLine(File.ReadAllText("appsettings.json"));
+Log.Instance.Trace("App started");
+Log.Instance.Trace("appsettings.json");
+Log.Instance.Trace(File.ReadAllText("appsettings.json"));
 
 IHost host = Host.CreateDefaultBuilder(args)
     .ConfigureServices((context, services) =>
