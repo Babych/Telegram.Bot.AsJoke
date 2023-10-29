@@ -28,6 +28,7 @@ name: Build and deploy a container to an Azure Web App
 
 env:
   AZURE_WEBAPP_NAME: devbotwacd  # set this to the name of your Azure Web App
+  API_KEY3: teeest3  # set this to the name of your Azure Web App
 
 on:
   push:
