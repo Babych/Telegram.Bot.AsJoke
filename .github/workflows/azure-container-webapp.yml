@@ -68,7 +68,6 @@ jobs:
           file: ./Dockerfile
           build-args: |
             API_KEY=${{ secrets.API_KEY }}
-            API_KEY3=bar
 
   deploy:
     permissions:
