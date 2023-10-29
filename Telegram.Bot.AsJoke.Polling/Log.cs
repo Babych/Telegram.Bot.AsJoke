@@ -15,15 +15,29 @@ namespace Telegram.BotAsJoke.Polling
         
         public Log()
         {
-            string instrumentationKey = Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY");
-            
-            telemetryClient = new TelemetryClient(new TelemetryConfiguration(instrumentationKey));
+            try
+            {
+                string instrumentationKey = Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY");
+
+                telemetryClient = new TelemetryClient(new TelemetryConfiguration(instrumentationKey));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
 
         }
 
         public void Trace(string message)
         {
-            telemetryClient.TrackTrace(message);
+            try
+            {
+                telemetryClient.TrackTrace(message);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
         }
     }
 }

@@ -2,6 +2,7 @@ using Telegram.Bot;
 using Telegram.Bot.Services;
 using Telegram.BotAsJoke.Polling;
 
+Console.WriteLine("App started");
 Log.Instance.Trace("App started");
 Log.Instance.Trace($"API_KEY {Environment.GetEnvironmentVariable("API_KEY")}");
 

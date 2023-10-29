@@ -34,7 +34,11 @@ jobs:
         script: |
           export API_KEY=${{ secrets.API_KEY }}
           export APPINSIGHTS_INSTRUMENTATIONKEY=${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
+          printenv  # Print environment variables for debugging
           docker pull dbabych/devbotvm:latest
           docker stop devbotvm || true
           docker rm devbotvm || true
-          docker run -d --name devbotvm --restart always dbabych/devbotvm:latest
+          docker run -d \
+          -e API_KEY=$API_KEY \
+          -e APPINSIGHTS_INSTRUMENTATIONKEY=$APPINSIGHTS_INSTRUMENTATIONKEY \
+          --name devbotvm --restart always dbabych/devbotvm:latest
