@@ -20,7 +20,7 @@ RUN sed -i "s|\"API_KEY\"|\"$API_KEY\"|g" Telegram.Bot.AsJoke.Polling/appsetting
 RUN cat Telegram.Bot.AsJoke.Polling/appsettings.json
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+FROM mcr.microsoft.com/dotnet/sdk:7.0
 WORKDIR /App
 COPY --from=build-env /App/out .
 
