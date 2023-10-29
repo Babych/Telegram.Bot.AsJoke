@@ -1,5 +1,5 @@
 # Use .NET 6.0 SDK as build environment
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS runtime
 WORKDIR /App
 
 # Accept build arguments for API keys
@@ -20,6 +20,7 @@ COPY --from=build-env /App/out .
 
 # Replace API Key in Config File
 RUN sed -i "s|\"API_KEY\"|\"$API_KEY\"|g" Telegram.Bot.AsJoke.Polling/appsettings.json
+
 
 # List the content of appsettings.json
 RUN cat Telegram.Bot.AsJoke.Polling/appsettings.json
