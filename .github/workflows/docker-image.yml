@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
     
 jobs:
-  deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -24,7 +24,11 @@ jobs:
       run: |
         docker build -t dbabych/devbotvm:latest .
         docker push dbabych/devbotvm:latest
-
+  
+  deployment:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
     - name: SSH into Target Environment and deploy
       uses: appleboy/ssh-action@master
       with:
