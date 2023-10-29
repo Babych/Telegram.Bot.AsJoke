@@ -32,7 +32,9 @@ jobs:
         username: ${{ secrets.TARGET_USERNAME }}
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
+          export API_KEY=${{ secrets.API_KEY }}
+          export APPINSIGHTS_INSTRUMENTATIONKEY=${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
           docker pull dbabych/devbotvm:latest
           docker stop devbotvm || true
           docker rm devbotvm || true
-          docker run -d --name devbotvm dbabych/devbotvm:latest
+          docker run -d --name devbotvm --restart always dbabych/devbotvm:latest

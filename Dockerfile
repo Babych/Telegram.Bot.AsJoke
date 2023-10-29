@@ -1,4 +1,4 @@
-# Use .NET 7.0 SDK as build environment
+# Use .NET 6.0 SDK as build environment
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
 WORKDIR /App
 
