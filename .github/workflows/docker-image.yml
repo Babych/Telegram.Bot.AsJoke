@@ -1,4 +1,4 @@
-name: Docker Image CI
+name: Docker Image CI - devbotvm
 
 on:
   push:
@@ -39,7 +39,6 @@ jobs:
         script: |
           export API_KEY=${{ secrets.API_KEY }}
           export APPINSIGHTS_INSTRUMENTATIONKEY=${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
-          printenv  # Print environment variables for debugging
           docker pull dbabych/devbotvm:latest
           docker stop devbotvm || true
           docker rm devbotvm || true

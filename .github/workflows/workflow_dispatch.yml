@@ -1,0 +1,21 @@
+name: Stop Docker Container - devbotvm
+
+on:
+  workflow_dispatch:  # Allow manual triggering of this workflow
+
+jobs:
+  stop-containers:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Stop Docker Containers on Remote Server
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.TARGET_HOST }}
+          username: ${{ secrets.TARGET_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Stop the specific Docker image
+            docker stop $(docker ps -q --filter ancestor=dbabych/devbotvm:latest) || true
