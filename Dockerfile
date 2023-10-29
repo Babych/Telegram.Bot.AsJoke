@@ -16,7 +16,10 @@ RUN dotnet publish -c Release -o out
 RUN ls
 
 # Replace API Key in Config File
-RUN sed -i 's|API_KEY|'$API_KEY'|g' Telegram.Bot.AsJoke.Polling/appsettings.json
+RUN sed -i "s|\"API_KEY\"|\"$API_KEY\"|g" Telegram.Bot.AsJoke.Polling/appsettings.json
+
+# Print the API_KEY environment variable in the build logs
+RUN echo "API_KEY is $API_KEY"
 
 # List the content of appsettings.json
 RUN cat Telegram.Bot.AsJoke.Polling/appsettings.json
