@@ -4,6 +4,7 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.InlineQueryResults;
 using Telegram.Bot.Types.ReplyMarkups;
+using Telegram.BotAsJoke.Polling.Storage;
 
 namespace Telegram.Bot.Services;
 
@@ -11,6 +12,7 @@ public class UpdateHandler : IUpdateHandler
 {
     private readonly ITelegramBotClient _botClient;
     private readonly ILogger<UpdateHandler> _logger;
+    private readonly StorageTableProvider _storageTableProvider;
 
     static Dictionary<string, string> files = new()
     {
@@ -28,8 +30,9 @@ public class UpdateHandler : IUpdateHandler
         { "12", "photo_5474138455765274187_y.jpg" },
     };
 
-    public UpdateHandler(ITelegramBotClient botClient, ILogger<UpdateHandler> logger)
+    public UpdateHandler(ITelegramBotClient botClient, ILogger<UpdateHandler> logger, StorageTableProvider storageTableProvider)
     {
+        _storageTableProvider = storageTableProvider;
         _botClient = botClient;
         _logger = logger;
     }
@@ -65,8 +68,9 @@ public class UpdateHandler : IUpdateHandler
         
         var action = messageText.Split(' ')[0] switch
         {
-            "/inline_keyboard" => SendInlineKeyboard(_botClient, message, cancellationToken),
+            "/inlinekeyboard"  => SendInlineKeyboard(_botClient, message, cancellationToken),
             "/keyboard"        => SendReplyKeyboard(_botClient, message, cancellationToken),
+            "/normalkeyboard"  => SendNormalKeyboard(_botClient, message, cancellationToken),
             "/remove"          => RemoveKeyboard(_botClient, message, cancellationToken),
             "/randomMeme"      => SendFile(_botClient, message, random.Next(1, 12).ToString(), cancellationToken),
             "/request"         => RequestContactAndLocation(_botClient, message, cancellationToken),
@@ -124,8 +128,9 @@ public class UpdateHandler : IUpdateHandler
         static async Task<Message> Usage(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
         {
             const string usage = "Використання:\n" +
-                                 "/randomMeme       - Отримати випадковий мемас\n" +
-                                 "/inline_keyboard      - Показати клавіатуру";
+                                 "/randomMeme          - Отримати випадковий мемас\n" +
+                                 "/inlinekeyboard      - Показати клавіатуру\n" +
+                                 "/normalkeyboard      - Показати normalkeyboard";
 
             return await botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
@@ -156,6 +161,25 @@ public class UpdateHandler : IUpdateHandler
 #pragma warning restore RCS1163 // Unused parameter.
     }
 
+
+    static async Task<Message> SendNormalKeyboard(ITelegramBotClient botClient, Message message,
+        CancellationToken cancellationToken)
+    {
+        var keyboardButtons =
+            new KeyboardButton[]
+            {
+                "Help",
+                "About",
+            };
+
+        var keyboard = new ReplyKeyboardMarkup(keyboardButtons)
+        {
+            ResizeKeyboard = true
+        };
+
+        return await botClient.SendTextMessageAsync(message.Chat.Id, "My Keyboard", replyMarkup: keyboard, cancellationToken: cancellationToken);
+    }
+
     // Send inline keyboard
     // You can process responses in BotOnCallbackQueryReceived handler
     static async Task<Message> SendInlineKeyboard(ITelegramBotClient botClient, Message message, CancellationToken cancellationToken)
@@ -175,20 +199,10 @@ public class UpdateHandler : IUpdateHandler
                     new []
                     {
                         InlineKeyboardButton.WithCallbackData("1", "1"),
-                        InlineKeyboardButton.WithCallbackData("2", "2"),
-                        InlineKeyboardButton.WithCallbackData("3", "3"),
-                        InlineKeyboardButton.WithCallbackData("4", "4"),
-                        InlineKeyboardButton.WithCallbackData("5", "5"),
-                        InlineKeyboardButton.WithCallbackData("6", "6"),
                     },
                     new []
                     {
                         InlineKeyboardButton.WithCallbackData("7", "7"),
-                        InlineKeyboardButton.WithCallbackData("8", "8"),
-                        InlineKeyboardButton.WithCallbackData("9", "9"),
-                        InlineKeyboardButton.WithCallbackData("10", "10"),
-                        InlineKeyboardButton.WithCallbackData("11", "11"),
-                        InlineKeyboardButton.WithCallbackData("12", "12"),
                     }
             });
 
@@ -198,7 +212,6 @@ public class UpdateHandler : IUpdateHandler
             replyMarkup: inlineKeyboard,
             cancellationToken: cancellationToken);
     }
-
 
     static async Task<Message> SendFile(ITelegramBotClient botClient, Message message, string memeId, CancellationToken cancellationToken)
     {

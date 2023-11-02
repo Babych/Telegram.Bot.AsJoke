@@ -12,12 +12,13 @@ namespace Telegram.BotAsJoke.Polling
         }
 
         private readonly TelemetryClient telemetryClient;
-        
+
+        [Obsolete]
         public Log()
         {
             try
             {
-                string instrumentationKey = Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY");
+                string instrumentationKey = Environment.GetEnvironmentVariable("APPINSIGHTS_INSTRUMENTATIONKEY") ?? string.Empty;
 
                 telemetryClient = new TelemetryClient(new TelemetryConfiguration(instrumentationKey));
             }
@@ -28,11 +29,24 @@ namespace Telegram.BotAsJoke.Polling
 
         }
 
-        public void Trace(string message)
+        public void Trace(string message, Dictionary<string, string> properties = null)
         {
             try
             {
-                telemetryClient.TrackTrace(message);
+                telemetryClient.TrackTrace(message, properties);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+        }
+
+        public void TrackException(Exception exception, string eventName)
+        {
+            try
+            {
+                telemetryClient.TrackException(exception,
+                    new Dictionary<string, string>() { { nameof(eventName), eventName } });
             }
             catch (Exception e)
             {
