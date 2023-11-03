@@ -82,8 +82,8 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           export API_KEY=${{ secrets.TEST_API_KEY }}
-          export SESSION_STORAGE_CS=${{ secrets.SESSION_STORAGE_CS }}
-          export APPINSIGHTS_INSTRUMENTATIONKEY=${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
+          export SESSION_STORAGE_CS=${{ secrets.TEST_SESSION_STORAGE_CS }}
+          export APPINSIGHTS_INSTRUMENTATIONKEY=${{ secrets.TEST_APPINSIGHTS_INSTRUMENTATIONKEY }}
           docker pull dbabych/testbotvm:latest
           docker stop testbotvm || true
           docker rm testbotvm || true
