@@ -45,6 +45,6 @@ jobs:
           docker rm devbotvm || true
           docker run -d \
           -e API_KEY=$API_KEY \
-          -e SESSION_STORAGE_CS=SESSION_STORAGE_CS \
+          -e SESSION_STORAGE_CS=$SESSION_STORAGE_CS \
           -e APPINSIGHTS_INSTRUMENTATIONKEY=$APPINSIGHTS_INSTRUMENTATIONKEY \
           --name devbotvm --restart always dbabych/devbotvm:latest
