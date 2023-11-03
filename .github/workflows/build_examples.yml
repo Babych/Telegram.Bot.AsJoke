@@ -1,4 +1,4 @@
-name: Build and Run .NET Core App
+name: Build .NET Core App
 
 on:
   workflow_dispatch:

@@ -1,4 +1,4 @@
-name: Docker Image CI - devbotvm
+name: Docker Image Build and Deploy - devbotvm
 
 on:
   push:

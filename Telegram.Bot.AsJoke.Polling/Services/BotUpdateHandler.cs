@@ -49,7 +49,7 @@ public class BotUpdateHandler : IUpdateHandler
 
     private async Task BotOnMessageReceived(Message message, CancellationToken cancellationToken)
     {
-        logger.LogInformation("Receive message type: {MessageType}", message.Type);
+        Log.Instance.Trace("BotOnMessageReceived", new Dictionary<string, string> { { nameof(message), JsonConvert.SerializeObject(message) } });
 
         if (message.Type == MessageType.Photo)
         {
