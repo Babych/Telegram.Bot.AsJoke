@@ -38,7 +38,6 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         script: |
           export API_KEY=${{ secrets.API_KEY }}
-          export API_KEY=${{ secrets.API_KEY }}
           export SESSION_STORAGE_CS=${{ secrets.SESSION_STORAGE_CS }}
           export APPINSIGHTS_INSTRUMENTATIONKEY=${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
           docker pull dbabych/devbotvm:latest
