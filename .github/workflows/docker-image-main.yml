@@ -1,0 +1,38 @@
+runs-on: ubuntu-latest
+
+steps:
+  - name: Checkout code
+    uses: actions/checkout@v2
+
+  - name: Login to Docker Hub
+    uses: docker/login-action@v1
+    with:
+      username: ${{ secrets.DOCKER_USERNAME }}
+      password: ${{ secrets.DOCKER_PASSWORD }}
+
+  - name: Build and push Docker image
+    run: |
+      docker build -t dbabych/devbotvm:latest .
+      docker push dbabych/devbotvm:latest
+      
+  - name: Set environment variables for main branch
+    run: |
+      echo "API_KEY=${{ secrets.MAIN_API_KEY }}" >> $GITHUB_ENV
+      echo "SESSION_STORAGE_CS=${{ secrets.MAIN_SESSION_STORAGE_CS }}" >> $GITHUB_ENV
+      echo "APPINSIGHTS_INSTRUMENTATIONKEY=${{ secrets.MAIN_APPINSIGHTS_INSTRUMENTATIONKEY }}" >> $GITHUB_ENV
+
+  - name: SSH into Target Environment and deploy
+    uses: appleboy/ssh-action@master
+    with:
+      host: ${{ secrets.TARGET_HOST }}
+      username: ${{ secrets.TARGET_USERNAME }}
+      key: ${{ secrets.SSH_PRIVATE_KEY }}
+    run: |
+      docker pull dbabych/devbotvm:latest
+      docker stop devbotvm || true
+      docker rm devbotvm || true
+      docker run -d \
+        -e API_KEY=$API_KEY \
+        -e SESSION_STORAGE_CS=$SESSION_STORAGE_CS \
+        -e APPINSIGHTS_INSTRUMENTATIONKEY=$APPINSIGHTS_INSTRUMENTATIONKEY \
+        --name devbotvm --restart always dbabych/devbotvm:latest
