@@ -39,7 +39,7 @@ namespace Telegram.BotAsJoke.Polling.Storage
             {
                 var storageConnectionString = BotConfiguration.SaConnectionString;
 
-                Log.Instance.Trace($"storageConnectionString: {storageConnectionString}");
+                Log.Instance.Trace($"storageConnectionString", new Dictionary<string, string> { { nameof(storageConnectionString), storageConnectionString } });
 
                 BlobServiceClient blobServiceClient = new BlobServiceClient(storageConnectionString);
                 blobContainerClient = blobServiceClient.GetBlobContainerClient(BotAsJokeImgContainerName);
