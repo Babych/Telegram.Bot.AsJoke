@@ -12,7 +12,7 @@ jobs:
     if: github.ref == 'refs/heads/main'
 
     steps:
-    - name: Checkout code
+    - name: Checkout main code
       uses: actions/checkout@v2
 
     - name: Login to Docker Hub
@@ -21,7 +21,7 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push Docker image
+    - name: Build and push main Docker image
       run: |
         docker build -t dbabych/devbotvm:latest .
         docker push dbabych/devbotvm:latest
@@ -31,7 +31,7 @@ jobs:
     if: github.ref == 'refs/heads/dev'
 
     steps:
-    - name: Checkout code
+    - name: Checkout dev code
       uses: actions/checkout@v2
 
     - name: Login to Docker Hub
@@ -40,17 +40,17 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Build and push Docker image
+    - name: Build and push dev Docker image
       run: |
         docker build -t dbabych/testbotvm:latest .
         docker push dbabych/testbotvm:latest
   
   deployment-main:
-    needs: build
+    needs: build-main
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'  # Deploy only if the branch is main
     steps:
-    - name: SSH into Target Environment and deploy
+    - name: SSH into Target Environment and deploy main
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.TARGET_HOST }}
@@ -70,11 +70,11 @@ jobs:
           --name devbotvm --restart always dbabych/devbotvm:latest
 
   deployment-dev:
-    needs: build
+    needs: build-dev
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/dev'  # Deploy only if the branch is main
     steps:
-    - name: SSH into Target Environment and deploy
+    - name: SSH into Target Environment and deploy dev
       uses: appleboy/ssh-action@master
       with:
         host: ${{ secrets.TARGET_HOST }}
