@@ -7,8 +7,9 @@ on:
       - main  # Deploy only when changes are pushed to the main branch
     
 jobs:
-  build:
+  build-main:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
 
     steps:
     - name: Checkout code
@@ -24,8 +25,27 @@ jobs:
       run: |
         docker build -t dbabych/devbotvm:latest .
         docker push dbabych/devbotvm:latest
+
+  build-dev:
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image
+      run: |
+        docker build -t dbabych/testbotvm:latest .
+        docker push dbabych/testbotvm:latest
   
-  deployment:
+  deployment-main:
     needs: build
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'  # Deploy only if the branch is main
@@ -48,3 +68,27 @@ jobs:
           -e SESSION_STORAGE_CS=$SESSION_STORAGE_CS \
           -e APPINSIGHTS_INSTRUMENTATIONKEY=$APPINSIGHTS_INSTRUMENTATIONKEY \
           --name devbotvm --restart always dbabych/devbotvm:latest
+
+  deployment-dev:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'  # Deploy only if the branch is main
+    steps:
+    - name: SSH into Target Environment and deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.TARGET_HOST }}
+        username: ${{ secrets.TARGET_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          export API_KEY=${{ secrets.API_KEY }}
+          export SESSION_STORAGE_CS=${{ secrets.SESSION_STORAGE_CS }}
+          export APPINSIGHTS_INSTRUMENTATIONKEY=${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
+          docker pull dbabych/testbotvm:latest
+          docker stop testbotvm || true
+          docker rm testbotvm || true
+          docker run -d \
+          -e API_KEY=$API_KEY \
+          -e SESSION_STORAGE_CS=$SESSION_STORAGE_CS \
+          -e APPINSIGHTS_INSTRUMENTATIONKEY=$APPINSIGHTS_INSTRUMENTATIONKEY \
+          --name testbotvm --restart always dbabych/testbotvm:latest
