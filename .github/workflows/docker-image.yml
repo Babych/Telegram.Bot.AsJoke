@@ -3,14 +3,48 @@ name: Docker Image Build and Deploy - devbotvm
 on:
   push:
     branches:
-      - dev
-      - main
-
+      - dev  # Build on every push to the dev branch
+      - main  # Deploy only when changes are pushed to the main branch
+    
 jobs:
-  - name: Deploy to dev environment
-    if: github.ref == 'refs/heads/dev'
-    uses: ./docker-image-dev.yml
+  build:
+    runs-on: ubuntu-latest
 
-  - name: Deploy to main environment
-    if: github.ref == 'refs/heads/main'
-    uses: ./docker-image-main.yml
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v1
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Build and push Docker image
+      run: |
+        docker build -t dbabych/devbotvm:latest .
+        docker push dbabych/devbotvm:latest
+  
+  deployment:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'  # Deploy only if the branch is main
+    steps:
+    - name: SSH into Target Environment and deploy
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.TARGET_HOST }}
+        username: ${{ secrets.TARGET_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        script: |
+          export API_KEY=${{ secrets.API_KEY }}
+          export SESSION_STORAGE_CS=${{ secrets.SESSION_STORAGE_CS }}
+          export APPINSIGHTS_INSTRUMENTATIONKEY=${{ secrets.APPINSIGHTS_INSTRUMENTATIONKEY }}
+          docker pull dbabych/devbotvm:latest
+          docker stop devbotvm || true
+          docker rm devbotvm || true
+          docker run -d \
+          -e API_KEY=$API_KEY \
+          -e SESSION_STORAGE_CS=$SESSION_STORAGE_CS \
+          -e APPINSIGHTS_INSTRUMENTATIONKEY=$APPINSIGHTS_INSTRUMENTATIONKEY \
+          --name devbotvm --restart always dbabych/devbotvm:latest
