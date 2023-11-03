@@ -31,3 +31,6 @@ Examples in this repository use .NET 6. You might need to install required versi
 ## Community
 
 Feel free do join our [discussion group](https://t.me/tgbots_dotnet)!
+
+docker stop:
+docker stop $(docker ps -q --filter ancestor=dbabych/devbotvm:latest) || true

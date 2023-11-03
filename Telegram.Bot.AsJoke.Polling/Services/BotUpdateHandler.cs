@@ -286,6 +286,9 @@ public class BotUpdateHandler : IUpdateHandler
                 Console.WriteLine(e);
             }
         }
+
+        await botClient.SendTextMessageAsync(message!.Chat.Id, "Розіслано",
+            replyMarkup: new ReplyKeyboardRemove(), cancellationToken: cancellationToken);
     }
 
     // Process Inline Keyboard callback data
