@@ -6,12 +6,12 @@ on:
       job:
         description: 'Job to run'
         required: true
-        default: 'start-container-dev'
+        default: 'stop-container-dev'
 
 jobs:
   stop-container-main:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main' && github.event.inputs.job == 'start-container-main'
+    if: github.ref == 'refs/heads/main' && github.event.inputs.job == 'stop-container-main'
     steps:
       - name: Stop Docker Containers on Remote Server - main
         uses: appleboy/ssh-action@master
@@ -25,7 +25,7 @@ jobs:
 
   stop-container-dev:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/dev' && github.event.inputs.job == 'start-container-dev'
+    if: github.ref == 'refs/heads/dev' && github.event.inputs.job == stop-container-dev'
     steps:
       - name: Stop Docker Containers on Remote Server - test
         uses: appleboy/ssh-action@master
