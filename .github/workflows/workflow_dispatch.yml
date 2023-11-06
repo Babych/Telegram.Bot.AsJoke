@@ -1,12 +1,17 @@
-name: Stop Docker Container - devbotvm
+name: Manage Docker Containers - devbotvm
 
 on:
-  workflow_dispatch:  # Allow manual triggering of this workflow
+  workflow_dispatch:
+    inputs:
+      job:
+        description: 'Job to run'
+        required: true
+        default: 'start-container-dev'
 
 jobs:
   stop-container-main:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'  # Deploy only if the branch is main
+    if: github.event_name == 'workflow_dispatch'  # Run only when manually triggered
     steps:
       - name: Stop Docker Containers on Remote Server - main
         uses: appleboy/ssh-action@master
@@ -20,7 +25,7 @@ jobs:
 
   stop-container-dev:
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/dev'  # Deploy only if the branch is dev
+    if: github.event_name == 'workflow_dispatch'  # Run only when manually triggered
     steps:
       - name: Stop Docker Containers on Remote Server - test
         uses: appleboy/ssh-action@master
@@ -31,3 +36,31 @@ jobs:
           script: |
             # Stop the specific Docker image
             docker stop $(docker ps -q --filter ancestor=dbabych/testbotvm:latest) || true
+
+  start-container-main:
+   runs-on: ubuntu-latest
+   if: github.event_name == 'workflow_dispatch'  # Run only when manually triggered
+   steps:
+     - name: Start Docker Containers on Remote Server - dev
+       uses: appleboy/ssh-action@master
+       with:
+         host: ${{ secrets.TARGET_HOST }}
+         username: ${{ secrets.TARGET_USERNAME }}
+         key: ${{ secrets.SSH_PRIVATE_KEY }}
+         script: |
+           # Start the specific Docker image
+           docker run -d --name testbotvm dbabych/devbotvm:latest
+
+  start-container-dev:
+   runs-on: ubuntu-latest
+   if: github.event_name == 'workflow_dispatch'  # Run only when manually triggered
+   steps:
+     - name: Start Docker Containers on Remote Server - dev
+       uses: appleboy/ssh-action@master
+       with:
+         host: ${{ secrets.TARGET_HOST }}
+         username: ${{ secrets.TARGET_USERNAME }}
+         key: ${{ secrets.SSH_PRIVATE_KEY }}
+         script: |
+           # Start the specific Docker image
+           docker run -d --name testbotvm dbabych/testbotvm:latest
