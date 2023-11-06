@@ -6,6 +6,7 @@ on:
 jobs:
   stop-container-main:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'  # Deploy only if the branch is main
     steps:
       - name: Stop Docker Containers on Remote Server - main
         uses: appleboy/ssh-action@master
@@ -19,6 +20,7 @@ jobs:
 
   stop-container-dev:
     runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/dev'  # Deploy only if the branch is dev
     steps:
       - name: Stop Docker Containers on Remote Server - test
         uses: appleboy/ssh-action@master
