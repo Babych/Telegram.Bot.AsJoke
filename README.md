@@ -1,3 +1,6 @@
+# Pipelines status:
+[![Docker Image Build and Deploy - devbotvm](https://github.com/Babych/Telegram.Bot.AsJoke/actions/workflows/docker-image.yml/badge.svg)](https://github.com/Babych/Telegram.Bot.AsJoke/actions/workflows/docker-image.yml)
+
 # Telegram.Bot Examples
 
 [![telegram chat](https://img.shields.io/badge/Support_Chat-Telegram-blue.svg?style=flat-square)](https://t.me/joinchat/B35YY0QbLfd034CFnvCtCA)
