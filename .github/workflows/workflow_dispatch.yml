@@ -9,6 +9,15 @@ on:
         default: 'stop-container-dev'
 
 jobs:
+  handle-input:
+    runs-on: ubuntu-latest
+    outputs:
+      job: ${{ needs.handle-input.outputs.job }}
+    steps:
+      - name: Set job output
+        id: handle-input
+        run: echo "::set-output name=job::${{ github.event.inputs.job }}"
+
   stop-container-main:
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main' && github.event.inputs.job == 'stop-container-main'
