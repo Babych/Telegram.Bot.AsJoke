@@ -4,13 +4,10 @@ on:
   workflow_dispatch:  # Allow manual triggering of this workflow
 
 jobs:
-  stop-containers:
+  stop-container-main:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Stop Docker Containers on Remote Server
+      - name: Stop Docker Containers on Remote Server - main
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.TARGET_HOST }}
@@ -19,3 +16,16 @@ jobs:
           script: |
             # Stop the specific Docker image
             docker stop $(docker ps -q --filter ancestor=dbabych/devbotvm:latest) || true
+
+  stop-container-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Stop Docker Containers on Remote Server - test
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.TARGET_HOST }}
+          username: ${{ secrets.TARGET_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Stop the specific Docker image
+            docker stop $(docker ps -q --filter ancestor=dbabych/testbotvm:latest) || true
