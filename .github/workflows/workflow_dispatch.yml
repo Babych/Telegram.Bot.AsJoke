@@ -11,7 +11,7 @@ on:
 jobs:
   stop-container-main:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'  # Run only when manually triggered
+    if: github.ref == 'refs/heads/main' && github.event.inputs.job == 'start-container-main'
     steps:
       - name: Stop Docker Containers on Remote Server - main
         uses: appleboy/ssh-action@master
@@ -25,7 +25,7 @@ jobs:
 
   stop-container-dev:
     runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch'  # Run only when manually triggered
+    if: github.ref == 'refs/heads/dev' && github.event.inputs.job == 'start-container-dev'
     steps:
       - name: Stop Docker Containers on Remote Server - test
         uses: appleboy/ssh-action@master
@@ -39,7 +39,7 @@ jobs:
 
   start-container-main:
    runs-on: ubuntu-latest
-   if: github.event_name == 'workflow_dispatch'  # Run only when manually triggered
+   if: github.ref == 'refs/heads/main' && github.event.inputs.job == 'start-container-main'
    steps:
      - name: Start Docker Containers on Remote Server - dev
        uses: appleboy/ssh-action@master
@@ -53,7 +53,7 @@ jobs:
 
   start-container-dev:
    runs-on: ubuntu-latest
-   if: github.event_name == 'workflow_dispatch'  # Run only when manually triggered
+   if: github.ref == 'refs/heads/dev' && github.event.inputs.job == 'start-container-dev'
    steps:
      - name: Start Docker Containers on Remote Server - dev
        uses: appleboy/ssh-action@master
